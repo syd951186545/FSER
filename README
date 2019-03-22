@@ -1,0 +1,16 @@
+0.  "Main_"   program's entrance
+        you can run "Main_autoparam.py" with random(grid) search Hyper parameter
+        or run "Main_manually.py" defined Hyper parameter by yourself
+
+
+1. "Core" contains mainly program
+2. "Data" data file
+3. "Metric" for measure MAE and RMSE
+4. "Result" store recommendation list and explanation
+
+Please consult Core/README.txt
+
+Usage:
+!Prepare file and set file parameter ,of which format has given in Core/DataLoader.py
+
+!Directly Run "Main_autoparam.py"

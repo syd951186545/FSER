@@ -1,0 +1,7 @@
+1.  "DataLoader.py" used to read data from file,which is imported in Main.py.
+2.  "Output,py" used to write data into file
+        default = Output.py
+        you can change output by using Output2.py
+3,  "Train.py" program's mainly process,for training optimal module
+4.  "Loss.py" for Training,calculate loss(cost)
+
