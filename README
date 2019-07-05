@@ -1,6 +1,6 @@
 0.  "Main_"   program's entrance
         you can run "Main_autoparam.py" with random(grid) search Hyper parameter
-        or run "Main_manually.py" defined Hyper parameter by yourself
+        or run "Main_manually.py" defined Hyper parameter by yourself in Core.config
 
 
 1. "Core" contains mainly program

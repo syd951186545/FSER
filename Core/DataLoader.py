@@ -5,6 +5,7 @@ import random
 import time
 import numpy as np
 from sklearn.cluster import KMeans
+from Core.config import config
 
 
 def get_index(key):
@@ -47,10 +48,10 @@ def dataprocess(U_num=10719, I_num=10410, F_num=104, W_num=1019):
     """
 
     # -----Input file-----r:rating/s:sentiment/ u:user/a:aspect/i:item/w:word
-    uiaw_train_file = open('./data/uiawr_id.train', encoding='UTF-8')
-    uiaw_test_file = open('./data/uiawr_id.test', encoding='UTF-8')
-    aspect_dic_file = open('./data/aspect.map', encoding='UTF-8')
-    word_dic_file = open('./data/word.senti.map', encoding='UTF-8')
+    uiaw_train_file = open("./Data/"+config.dataset_name+"/uiawr_id.train", encoding='UTF-8')
+    uiaw_test_file = open("./Data/"+config.dataset_name+"/uiawr_id.test", encoding='UTF-8')
+    aspect_dic_file = open("./Data/"+config.dataset_name+"/aspect.map", encoding='UTF-8')
+    word_dic_file = open("./Data/"+config.dataset_name+"/word.senti.map", encoding='UTF-8')
     # -----Global Input data u:user/a:aspect/i:item/w:word-----
 
     aspect_dic = {}
@@ -60,7 +61,7 @@ def dataprocess(U_num=10719, I_num=10410, F_num=104, W_num=1019):
     ui_rating_dic = {}
     ui_rating_dic_test = {}
     # user to construct S
-    uia_senti_dic = {}
+    uia_senti_dic_train = {}
     uia_senti_dic_test = {}
     # # user to construct O
     iaw_frequency_dic = {}
@@ -89,7 +90,7 @@ def dataprocess(U_num=10719, I_num=10410, F_num=104, W_num=1019):
     for line in uiaw_train_file.readlines():
         cnt_train += 1
         line = line.replace("\n", "")
-        eachline = line.strip().split(" ")
+        eachline = line.strip().split("\t")  # yelp是空格
         u_idx = int(eachline[0])
         i_idx = int(eachline[1])
         # rating = ui_rating_dic[str([u_idx, i_idx])]
@@ -104,14 +105,14 @@ def dataprocess(U_num=10719, I_num=10410, F_num=104, W_num=1019):
         if str([i_idx, a_idx, w_idx]) not in iaw_frequency_dic:
             iaw_frequency_dic[str([i_idx, a_idx, w_idx])] = 0
         iaw_frequency_dic[str([i_idx, a_idx, w_idx])] += 1
-        if str([u_idx, i_idx, a_idx]) not in uia_senti_dic:
-            uia_senti_dic[str([u_idx, i_idx, a_idx])] = 0
-        uia_senti_dic[str([u_idx, i_idx, a_idx])] += w_senti
+        if str([u_idx, i_idx, a_idx]) not in uia_senti_dic_train:
+            uia_senti_dic_train[str([u_idx, i_idx, a_idx])] = 0
+        uia_senti_dic_train[str([u_idx, i_idx, a_idx])] += w_senti
 
     for line in uiaw_test_file.readlines():
         cnt_test += 1
         line = line.replace("\n", "")
-        eachline = line.strip().split(" ")
+        eachline = line.strip().split("\t")
         u_idx = int(eachline[0])
         i_idx = int(eachline[1])
         a_idx = int(eachline[2])
@@ -122,9 +123,12 @@ def dataprocess(U_num=10719, I_num=10410, F_num=104, W_num=1019):
         if str([i_idx, a_idx, w_idx]) not in iaw_frequency_test_dic:
             iaw_frequency_test_dic[str([i_idx, a_idx, w_idx])] = 0
         iaw_frequency_test_dic[str([i_idx, a_idx, w_idx])] += 1
+        if str([u_idx, i_idx, a_idx]) not in uia_senti_dic_test:
+            uia_senti_dic_test[str([u_idx, i_idx, a_idx])] = 0
+        uia_senti_dic_test[str([u_idx, i_idx, a_idx])] += w_senti
     # sigmoid处理
-    for key in uia_senti_dic.keys():
-        uia_senti_dic[key] = 1 + 4 / (1 + np.exp(0 - uia_senti_dic[key]))
+    for key in uia_senti_dic_train.keys():
+        uia_senti_dic_train[key] = 1 + 4 / (1 + np.exp(0 - uia_senti_dic_train[key]))
     for key in uia_senti_dic_test.keys():
         uia_senti_dic_test[key] = 1 + 4 / (1 + np.exp(0 - uia_senti_dic_test[key]))
     for key in iaw_frequency_dic.keys():
@@ -143,5 +147,5 @@ def dataprocess(U_num=10719, I_num=10410, F_num=104, W_num=1019):
     uiaw_test_file.close()
     aspect_dic_file.close()
     word_dic_file.close()
-    return uiaw_list, uw_frequency_mat, ui_rating_dic, uia_senti_dic, iaw_frequency_dic, ui_rating_dic_test, word_dic, \
-           aspect_dic, iaw_frequency_test_dic
+    return uiaw_list, uw_frequency_mat, ui_rating_dic, uia_senti_dic_train, iaw_frequency_dic, ui_rating_dic_test, word_dic, \
+           aspect_dic, iaw_frequency_test_dic,uia_senti_dic_test

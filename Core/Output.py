@@ -1,5 +1,5 @@
 import numpy as np
-
+from Core.config import config
 
 # ---------Output or Not------------
 # ---------Reverse mapping----------
@@ -24,8 +24,8 @@ def Output(nowTime, U, I, F, W, U_num, iaw_frequency_dic, word_dic, aspect_dic, 
     #     aspect2id_dic[item[1]] = item[0]
     # -----Hyper parameter-------------
     print('Output to file...')
-    item_recrank_file = open("./Result/" + str(nowTime) + ".reclist", "w", encoding="UTF-8")
-    item_recexplian_file = open("./Result/" + str(nowTime) + ".explanation", "w", encoding="UTF-8")
+    item_recrank_file = open("./Result/" +config.dataset_name+ str(nowTime) + ".reclist", "w", encoding="UTF-8")
+    item_recexplian_file = open("./Result/" +config.dataset_name+ str(nowTime) + ".explanation", "w", encoding="UTF-8")
     rank_length = 100
     top_word_num = 6
     top_aspect_num = 10

@@ -11,25 +11,29 @@ I_num = 10410
 F_num = 104
 W_num = 1019
 
-uiaw_list, uw_frequency_mat, ui_rating_dic, uia_senti_dic, iaw_frequency_dic, ui_rating_dic_test, word_dic, aspect_dic, \
-    iaw_frequency_test_dic = dataprocess(U_num, I_num, F_num, W_num)
+uiaw_list, uw_frequency_mat, ui_rating_dic, uia_senti_dic, iaw_frequency_dic, ui_rating_dic_test, word_dic, aspect_dic,iaw_frequency_test_dic \
+    , uia_senti_dic_test = dataprocess(U_num, I_num, F_num, W_num)
+
 for param_search in range(1000):
     # -------Hyper parameter----------
     print("----------" + str(param_search) + "--------------------")
-    param_file = open("./param.txt", "a")
+    param_file = open("./param_def_lmd.txt", "a")
     U_dim = 24
     I_dim = 12
     F_dim = 12
     W_dim = 24
-    num_iter = random.choice([i * 2000 for i in range(1, 11)])
-    minibatch = random.choice([200, 400, 700, 1000])
-    lmd_reg = random.random()
-    lmd_r = random.random()
-    lmd_s = random.random()
-    lmd_o = random.random()
-    lmd_bpr = random.random()
-    neg_sample_rate = random.choice([0.01, 0.1, 0.2, 0.5])  # 这个负采样为选择负样本的概率
-    lr = random.choice([0.001, 0.01, 0.1, 0.2])
+    # num_iter = random.choice([i * 2000 for i in range(1, 11)])
+    num_iter = 6000
+    # minibatch = random.choice([200, 400, 700, 1000])
+    minibatch = 200
+    lmd_reg = 10 * round(random.random(), 2)
+    lmd_r = 1
+    lmd_s = round(random.random(), 2)
+    lmd_o = round(random.random(), 2)
+    lmd_bpr = 0
+    # neg_sample_rate = random.choice([0.01, 0.1, 0.2, 0.5])  # 这个负采样为选择负样本的概率
+    neg_sample_rate = 0
+    lr = 0.1
     param_s = (num_iter, minibatch, lmd_r, lmd_s, lmd_o, lmd_bpr, lmd_reg, lr, neg_sample_rate)
     # --------------------------
     print(U_dim, I_dim, F_dim, W_dim)
@@ -39,7 +43,8 @@ for param_search in range(1000):
                                             ui_rating_dic, uia_senti_dic, iaw_frequency_dic,
                                             U_dim, I_dim, F_dim, W_dim, U_num, I_num, F_num + 1, W_num,
                                             num_iter, lmd_reg, lmd_r, lmd_s, lmd_o, neg_sample_rate, lmd_bpr,
-                                            minibatch, lr, random_seed=0, eps=1e-8)
+                                            minibatch, lr, ui_rating_dic_test, uia_senti_dic_test, random_seed=0,
+                                            eps=1e-8)
     train_time = time.time() - start_time
 
     # ---------Evaluate  or Not------------
@@ -65,11 +70,12 @@ for param_search in range(1000):
     print(train_time)
 
     nowTime = datetime.datetime.now().strftime('%Y%m%d_%H_%M_%S')
-    param_file.write(str(param_s))
+    param_file.write("lmd_r={}\t,lmd_s={}\t,lmd_o={}\t,lmd_reg={}".format(lmd_r, lmd_s, lmd_o, lmd_reg))
     param_file.write("\n")
-    param_file.write(str(nowTime) + " RMSE:" + str(RMSEv) + " MAE:" + str(MAEv))
+    param_file.write(str(nowTime) + " \tRMSE:" + str(RMSEv) + " \tMAE:" + str(MAEv))
     param_file.write("\n")
     param_file.close()
 
     # ---------Output to file  or Not------------
-    Output(nowTime, U, I, F, W, U_num, iaw_frequency_dic, word_dic, aspect_dic, rec_item, ui_rating_dic_test,iaw_frequency_test_dic)
+    # Output(nowTime, U, I, F, W, U_num, iaw_frequency_dic, word_dic, aspect_dic, rec_item, ui_rating_dic_test,
+    #        iaw_frequency_test_dic)
